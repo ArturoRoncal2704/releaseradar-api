@@ -12,7 +12,7 @@ public interface WatchlistRepository extends JpaRepository<Watchlist, Long> {
 
     List<Watchlist> findByUsuarioId(Long usuarioId);
 
-    boolean existByUsuarioIdAndTituloId(Long usuarioId, Long tiutloId);
+    boolean existsByUsuarioIdAndTituloId(Long usuarioId, Long tituloId);
 
     @Query("SELECT w FROM Watchlist w WHERE w.titulo.fechaEstreno = :fechaHoy AND w.notificado = false")
     List<Watchlist> buscarEstrenosParaNotificarHoy(@Param("fechaHoy")LocalDate fechaHoy);
