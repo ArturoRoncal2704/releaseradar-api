@@ -1,5 +1,6 @@
 package com.arturo.releaseradarapi.controllers;
 
+import com.arturo.releaseradarapi.dto.LoginRequest;
 import com.arturo.releaseradarapi.dto.ReenviarOtpRequest;
 import com.arturo.releaseradarapi.dto.RegistroRequest;
 import com.arturo.releaseradarapi.dto.VerificarOtpRequest;
@@ -46,6 +47,16 @@ public class AuthController {
             return ResponseEntity.ok(mensaje);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LoginRequest request){
+        try{
+            String mensaje = authService.loginUsuario(request.getEmail(), request.getPassword());
+            return ResponseEntity.ok(mensaje);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(401).body(e.getMessage());
         }
     }
 }

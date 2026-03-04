@@ -3,6 +3,7 @@ package com.arturo.releaseradarapi.services;
 import com.arturo.releaseradarapi.entity.Usuario;
 import com.arturo.releaseradarapi.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,10 @@ public class AuthService {
 
     private final EmailService emailService;
 
+    private final PasswordEncoder passwordEncoder;
+
+    private final JwtService jwtService;
+
     @Transactional
     public String registrarUsuario(String email, String password){
         var usuarioOpt = usuarioRepository.findByEmail(email);
@@ -26,7 +31,7 @@ public class AuthService {
                 throw new RuntimeException("Error: El correo ya está registrado en ReleaseRadar.");
             }else {
                 String nuevoOtp = generarOtp();
-                usuarioExistente.setPassword(password);
+                usuarioExistente.setPassword(passwordEncoder.encode(password));
                 usuarioExistente.setCodigoOtp(nuevoOtp);
                 usuarioExistente.setFechaExpiracionOtp(LocalDateTime.now().plusMinutes(5));
 
@@ -40,7 +45,7 @@ public class AuthService {
         String codigoOtp = generarOtp();
         Usuario nuevoUsuario = Usuario.builder()
                 .email(email)
-                .password(password)
+                .password(passwordEncoder.encode(password))
                 .codigoOtp(codigoOtp)
                 .fechaExpiracionOtp(LocalDateTime.now().plusMinutes(5))
                 .build();
@@ -89,6 +94,23 @@ public class AuthService {
         usuarioRepository.save(usuario);
         return "¡Cuenta activada con éxito! Ya puedes iniciar sesión";
     }
+
+    public String loginUsuario(String email, String password){
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Error: Credenciales incorrectas."));
+
+        if(!"ACTIVO".equals(usuario.getEstado())){
+            throw new RuntimeException("Error: Tu cuenta no está activa. Revisa tu correo o solicita un nuevo código");
+        }
+
+        if(!passwordEncoder.matches(password, usuario.getPassword())){
+            throw new RuntimeException("Error: Credenciales incorrectas.");
+        }
+
+        return jwtService.generartoken(email);
+    }
+
+
     private String generarOtp(){
         Random random = new Random();
         int numero = 100000 + random.nextInt(900000);
