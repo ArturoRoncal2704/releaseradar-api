@@ -26,7 +26,7 @@ public class Watchlist {
     private Usuario usuario;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "titutlo_id",nullable = false)
+    @JoinColumn(name = "titulo_id",nullable = false)
     private Titulo titulo;
 
     @Column(nullable = false)
