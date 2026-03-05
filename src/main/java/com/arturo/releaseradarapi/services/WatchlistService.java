@@ -11,4 +11,6 @@ public interface WatchlistService {
     Watchlist agregarTitulo(String emailUsuario, Titulo tituloData);
 
     List<WatchlistResponse> obtenerMiWatchlist(String emailUsuario);
+
+    void eliminarTituloDeWatchlist(Long watchlistId, String emailUsuario);
 }

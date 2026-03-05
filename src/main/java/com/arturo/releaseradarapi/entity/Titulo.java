@@ -19,7 +19,7 @@ public class Titulo {
     private Long id;
 
     @Column(name = "tmdb_id" , unique = true, nullable = false)
-    private Integer tmdbId;
+    private Long tmdbId;
 
     @Column(nullable = false, length = 200)
     private String nombre;

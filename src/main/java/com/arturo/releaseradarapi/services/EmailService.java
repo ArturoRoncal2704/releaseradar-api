@@ -27,4 +27,14 @@ public class EmailService {
         System.out.println("✅ Correo enviado exitosamente a: " + destinatario);
 
     }
+
+    public void enviarCorreo(String destinatario, String asunto, String texto){
+        SimpleMailMessage mensaje = new SimpleMailMessage();
+
+        mensaje.setTo(destinatario);
+        mensaje.setSubject(asunto);
+        mensaje.setText(texto);
+
+        mailSender.send(mensaje);
+        System.out.println("Correo de notificación enviado exitosamente a: " + destinatario);    }
 }

@@ -5,6 +5,7 @@ import com.arturo.releaseradarapi.entity.Titulo;
 import com.arturo.releaseradarapi.entity.Watchlist;
 import com.arturo.releaseradarapi.services.WatchlistService;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,5 +38,14 @@ public class WatchlistController {
         List<WatchlistResponse> miLista = watchlistService.obtenerMiWatchlist(emailUsuario);
 
         return ResponseEntity.ok(miLista);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> eliminarDeMiWatchlist(@PathVariable Long id, Principal principal) {
+        String emailUsuario = principal.getName();
+
+        watchlistService.eliminarTituloDeWatchlist(id, emailUsuario);
+
+        return ResponseEntity.ok("Título eliminado correctamente de tu Watchlist");
     }
 }
